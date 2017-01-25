@@ -1,0 +1,29 @@
+# Alert: The replication IO or SQL threads are stopped.
+ALERT MySQLReplicationNotRunning
+  IF mysql_slave_status_slave_io_running == 0 OR mysql_slave_status_slave_sql_running == 0
+  FOR 5m
+  LABELS {
+    service = "mysql",
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Slave replication is not running",
+    description = "Slave replication (IO or SQL) has been down for more than 2 minutes.",
+  }
+
+# Alert: The replication lag is non-zero and it predicted to not recover within
+#        2 minutes.  This allows for a small amount of replication lag.
+ALERT MySQLReplicationLag
+  IF
+      (mysql_slave_lag_seconds > 30)
+    AND on (instance)
+      (predict_linear(mysql_slave_lag_seconds[5m], 60*2) > 0)
+  FOR 5m
+  LABELS {
+    service = "mysql",
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "MySQL slave replication is lagging",
+    description = "The mysql slave replication has fallen behind and is not recovering",
+  }
