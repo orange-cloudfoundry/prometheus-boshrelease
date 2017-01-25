@@ -1,0 +1,35 @@
+# Alert: Galera node is not "ready".
+ALERT MySQLGaleraNotReady
+  IF mysql_global_status_wsrep_ready != 1
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Galera cluster node not ready",
+    description = "{{$labels.job}} on {{$labels.instance}} is not ready.",
+  }
+
+# Alert: Galera node state is not synced.
+ALERT MySQLGaleraOutOfSync
+  IF (mysql_global_status_wsrep_local_state != 4 AND mysql_global_variables_wsrep_desync == 0)
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Galera cluster node out of sync",
+    description = "{{$labels.job}} on {{$labels.instance}} is not in sync ({{$value}} != 4).",
+  }
+
+# Alert: Galera node is in "doner" state, and is behind applying transactions.
+ALERT MySQLGaleraDonorFallingBehind
+  IF (mysql_global_status_wsrep_local_state == 2 AND mysql_global_status_wsrep_local_recv_queue > 100)
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "xtradb cluster donor node falling behind",
+    description = "{{$labels.job}} on {{$labels.instance}} is a donor (hotbackup) and is falling behind (queue size {{$value}}).",
+}
