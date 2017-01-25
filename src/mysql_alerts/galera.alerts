@@ -58,6 +58,7 @@ ALERT MySQLGaleraNotConnected
     description = "A Galera cluster node on `{{$labels.instance}}` has not been connected to the cluster during the last 5 minutes",
   }
 
+# Alert: Galera node state is not synced.
 ALERT MySQLGaleraOutOfSync
   IF (mysql_global_status_wsrep_local_state != 4 AND mysql_global_variables_wsrep_desync == 0)
   FOR 5m
@@ -70,6 +71,7 @@ ALERT MySQLGaleraOutOfSync
     description = "A Galera cluster node on `{{$labels.instance}}` has not been in sync ({{$value}} != 4) during the last 5 minutes",
   }
 
+# Alert: Galera node is in "doner" state, and is behind applying transactions.
 ALERT MySQLGaleraDonorFallingBehind
   IF (mysql_global_status_wsrep_local_state == 2 AND mysql_global_status_wsrep_local_recv_queue > 100)
   FOR 5m
