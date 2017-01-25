@@ -33,3 +33,52 @@ ALERT MySQLGaleraDonorFallingBehind
     summary = "xtradb cluster donor node falling behind",
     description = "{{$labels.job}} on {{$labels.instance}} is a donor (hotbackup) and is falling behind (queue size {{$value}}).",
 }
+
+# Alert : Cluster size has less than 3 nodes
+ALERT MySQLGaleraClusterSize
+  IF (mysql_global_status_wsrep_cluster_size < 3)
+  FOR 5m
+  LABELS {
+	severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "XtraDB Cluster has less than 3 nodes",
+	description = "{{$labels.bosh_deployment}} has less than 3 nodes"
+  }
+  
+# Alert : Cluster size has less than 2 nodes
+ALERT MySQLGaleraClusterSize
+  IF (mysql_global_status_wsrep_cluster_size < 2)
+  FOR 5m
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "XtraDB Cluster has less than 2 nodes",
+	description = "{{$labels.bosh_deployment}} has less than 2 nodes"
+  }
+
+# Alert : Cluster hung
+ALERT 
+  IF (mysql_global_status_wsrep_flow_control_paused = 1)
+  FOR 1m 
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Cluster Hung",
+	description = "{{$labels.bosh_deployment}} is hung"
+  }
+  
+# Alert : Checking that general log is disabled
+ALERT 
+  IF (mysql_global_variables_general_log)
+  FOR 5m
+  LABELS {
+	severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "General log is enabled",
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} has general log enabled"
+  }
+
