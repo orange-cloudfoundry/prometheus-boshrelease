@@ -82,3 +82,52 @@ ALERT
 	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} has general log enabled"
   }
 
+# http://galeracluster.com/documentation-webpages/monitoringthecluster.html
+
+# Alert : Node is not part of the cluster
+ALERT MySQLGaleraNotPart
+  IF (mysql_global_status_wsrep_cluster_status != 1)
+  FOR 1m
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "The node is part of a nonoperational component",
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not part of the cluster"
+  }
+
+# Alert : Node is not connected to the cluster
+ALERT MySQLGaleraNotConnected
+  IF (mysql_global_status_wsrep_connected != 1)
+  FOR 1m
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "The node is not connected to the cluster",
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not connected to the cluster"
+  }
+
+# Alert : Node overwhelmed by write-sets
+ALERT MySQLGaleraOverwhemledByWriteSets
+  IF (mysql_global_status_wsrep_local_recv_queue > 100)
+  FOR 1m
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "The node is overwhelmed by write-sets"
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} cannot apply write-sets as fast as it receives them : rev_queue={{$value}}"
+  }
+
+# Alert : Node lagging behind
+ALERT MySQLGaleraLagging
+  IF (mysql_global_status_wsrep_flow_control_paused > 0.5 and mysql_global_status_wsrep_flow_control_paused < 1)
+  FOR 1m 
+  LABELS {
+	severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node lagging behind",
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} lagging behind : flow_control_paused={{$value}}"
+  }

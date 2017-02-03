@@ -8,3 +8,38 @@ ALERT MySQLInnoDBLogWaits
     summary = "MySQL innodb log writes stalling",
     description = "The innodb logs are waiting for disk at a rate of {{$value}} / second",
 }
+
+# Alert: Threads connected
+ALERT MySQLThreadsConnected
+  IF (mysql_global_status_threads_connected = mysql_global_variables_max_connections)
+  FOR 1m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "MySQL Too many connected threads",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Too many connected threads : {{$value}}",
+}
+
+# Alert: Max connections
+ALERT MySQLMaxConnections
+  IF (mysql_global_status_max_used_connections = mysql_global_variables_max_connections)
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "MySQL reached too many connections",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Reached too many connections : {{$value}}",
+}
+
+# Alert: InnoDB buffer pool too small
+ALERT MySQLInnoDBBufferPool
+  IF (rate(mysql_global_status_innodb_buffer_pool_wait_free[5m]) > 10)
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "MySQL InnoDB buffer pool seems too small",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} MySQL InnoDB buffer pool seems too small : {{$value}} / 5mns",
+}
+
