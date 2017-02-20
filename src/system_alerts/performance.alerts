@@ -1,0 +1,120 @@
+# Alert: CPU Warning
+ALERT SystemCPUWarning
+  IF (node_load1 > (count(count(node_cpu) without (mode)) without (cpu)))
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node CPU usage is too high",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node cpu usage is too high : {{$value}}",
+}
+
+# Alert: CPU Critical
+ALERT SystemCPUCritical
+  IF (node_load1 > 1.5 * (count(count(node_cpu) without (mode)) without (cpu)))
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Node CPU usage is too high",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node cpu usage is too high : {{$value}}",
+}
+
+# Alert: Memory Warning
+ALERT SystemMemoryWarning
+  IF (node_memory_MemAvailable < node_memory_MemTotal/10)
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node memory usage is too high",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node memory left : {{$value}}",
+}
+
+# Alert: Memory Critical
+ALERT SystemMemoryCritical
+  IF (node_memory_MemAvailable < node_memory_MemTotal/20)
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Node memory usage is too high",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node memory left : {{$value}}",
+}
+
+# Alert: Disk I/Os Warning
+ALERT SystemDiskIOsWarning
+  IF (irate(node_disk_io_time_ms[5m]) > 1000)
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Disk has too many I/Os",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node disk has too many I/Os : {{$value}}",
+}
+
+# Alert: Disk I/Os Critical
+ALERT SystemDiskIOsCritical
+  IF (irate(node_disk_io_time_ms[5m]) > 5000)
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Disk has too many I/Os",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node disk has too many I/Os : {{$value}}",
+}
+
+# Alert: Procs blocked Warning
+ALERT SystemProcsBlockedWarning
+  IF (irate(node_procs_blocked[5m]) > 5)
+  FOR 5m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Too many processes blocked recently",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Too many processes blocked recently : {{$value}}",
+}
+
+# Alert: Procs blocked Critical
+ALERT SystemProcsBlockedCritical
+  IF (irate(node_procs_blocked[5m]) > 10)
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Too many processes blocked recently",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Too many processes blocked recently : {{$value}}",
+}
+
+# Alert: Too many procs Warning
+ALERT SystemTooManyProcsWarning
+  IF (node_procs_running > 512)
+  FOR 10s
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Too many processes running",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Too many processes running : {{$value}}",
+}
+
+# Alert: Too many procs Critical
+ALERT SystemTooManyProcsCritical
+  IF (node_procs_running > 2048)
+  FOR 10s
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Too many processes running",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Too many processes running : {{$value}}",
+}
+

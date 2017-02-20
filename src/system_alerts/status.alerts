@@ -1,0 +1,59 @@
+# Alert: Up Warning
+ALERT SystemUpWarning
+  IF (up == 0)
+  FOR 1m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node monitoring seems to be down",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node monitoring seems to be down...",
+}
+
+# Alert: Up Critical
+ALERT SystemUpCritical
+  IF (up == 0)
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Node monitoring seems to be down",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node monitoring seems to be down...",
+}
+
+# Alert: Reboots too often
+ALERT SystemRebootsTooOften
+  IF (changes(node_boot_time{job="node_exporter"}[1d]) > 1)
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node reboots too often",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node reboots too often : {{$value}} during the last day",
+}
+
+# Alert: Filesystem full Warning
+ALERT SystemFilesystemFullWarning
+  IF (node_filesystem_avail < node_filesystem_size*0.25)
+  FOR 10m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node filesystem almost full",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node filesystem almost full : {{$value}}",
+}
+
+# Alert: Filesystem full Critical
+ALERT SystemFilesystemFullCritical
+  IF (node_filesystem_avail < node_filesystem_size*0.20)
+  FOR 10m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Node filesystem almost full",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} Node filesystem almost full : {{$value}}",
+}
+
