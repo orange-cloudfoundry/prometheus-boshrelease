@@ -1,0 +1,35 @@
+# Alert: Up Warning
+ALERT SystemUpWarning
+  IF (up == 0)
+  FOR 1m
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node monitoring seems to be down",
+    description = "Instance {{$labels.instance}} Node monitoring seems to be down...",
+}
+
+# Alert: Up Critical
+ALERT SystemUpCritical
+  IF (up == 0)
+  FOR 5m
+  LABELS {
+    severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "Node monitoring seems to be down",
+    description = "Instance {{$labels.instance}} Node monitoring seems to be down...",
+}
+
+# Alert: Reboots too often
+ALERT SystemRebootsTooOften
+  IF (changes(node_boot_time{job="node_exporter"}[1d]) > 15)
+  LABELS {
+    severity = "warning"
+  }
+  ANNOTATIONS {
+    summary = "Node reboots too often",
+    description = "Instance {{$labels.instance}} Node reboots too often : {{$value}} during the last day",
+}
+

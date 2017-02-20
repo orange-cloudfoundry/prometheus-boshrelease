@@ -1,0 +1,9 @@
+---
+name: system_alerts
+
+packages:
+  - system_alerts
+
+templates: {}
+
+properties: {}
