@@ -144,7 +144,7 @@ ALERT MySQLGaleraClusterSize
     summary = "XtraDB Cluster has less than 3 nodes",
 	description = "{{$labels.bosh_deployment}} has less than 3 nodes"
   }
-  
+
 # Alert : Cluster size has less than 2 nodes
 ALERT MySQLGaleraClusterSize
   IF (mysql_global_status_wsrep_cluster_size < 2)
@@ -158,9 +158,9 @@ ALERT MySQLGaleraClusterSize
   }
 
 # Alert : Cluster hung
-ALERT 
-  IF (mysql_global_status_wsrep_flow_control_paused = 1)
-  FOR 1m 
+ALERT MySQLGaleraClusterHung
+  IF (mysql_global_status_wsrep_flow_control_paused == 1)
+  FOR 1m
   LABELS {
 	severity = "critical"
   }
@@ -168,9 +168,9 @@ ALERT
     summary = "Cluster Hung",
 	description = "{{$labels.bosh_deployment}} is hung"
   }
-  
+
 # Alert : Checking that general log is disabled
-ALERT 
+ALERT MySQLGaleraGenelogDisabled
   IF (mysql_global_variables_general_log)
   FOR 5m
   LABELS {
@@ -215,14 +215,14 @@ ALERT MySQLGaleraOverwhemledByWriteSets
 	severity = "critical"
   }
   ANNOTATIONS {
-    summary = "The node is overwhelmed by write-sets"
+    summary = "The node is overwhelmed by write-sets",
 	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} cannot apply write-sets as fast as it receives them : rev_queue={{$value}}"
   }
 
 # Alert : Node lagging behind
 ALERT MySQLGaleraLagging
   IF (mysql_global_status_wsrep_flow_control_paused > 0.5 and mysql_global_status_wsrep_flow_control_paused < 1)
-  FOR 1m 
+  FOR 1m
   LABELS {
 	severity = "warning"
   }
