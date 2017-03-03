@@ -1,0 +1,5 @@
+---
+name: system_alerts
+
+files:
+  - system_alerts/**/*
