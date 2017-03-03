@@ -11,7 +11,7 @@ ALERT MySQLInnoDBLogWaits
 
 # Alert: Threads connected
 ALERT MySQLThreadsConnected
-  IF (mysql_global_status_threads_connected = mysql_global_variables_max_connections)
+  IF (mysql_global_status_threads_connected == mysql_global_variables_max_connections)
   FOR 1m
   LABELS {
     severity = "critical"
@@ -23,7 +23,7 @@ ALERT MySQLThreadsConnected
 
 # Alert: Max connections
 ALERT MySQLMaxConnections
-  IF (mysql_global_status_max_used_connections = mysql_global_variables_max_connections)
+  IF (mysql_global_status_max_used_connections == mysql_global_variables_max_connections)
   LABELS {
     severity = "warning"
   }
