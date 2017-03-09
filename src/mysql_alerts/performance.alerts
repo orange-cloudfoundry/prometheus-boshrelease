@@ -50,8 +50,8 @@ ALERT MySQLTableCache
     severity = "warning"
   }
   ANNOTATIONS {
-    summary = "MySQL too many opened tables for the table cache size",
-    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} MySQL too many opened tables ({{$value}}) for the table cache size",
+    summary = "MySQL has too many opened tables for the table cache size",
+    description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} MySQL has too many opened tables ({{$value}}) for the table cache size",
 }
 
 # Alert: Full joins
