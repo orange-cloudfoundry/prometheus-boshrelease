@@ -1,3 +1,4 @@
+
 ALERT MySQLGaleraClusterSize
   IF (mysql_global_status_wsrep_cluster_size < 3)
   FOR 5m
@@ -39,7 +40,7 @@ ALERT MySQLGaleraNotReady
   FOR 5m
   LABELS {
     service = "mysql",
-    severity = "critical",
+    severity = "warning",
   }
   ANNOTATIONS {
     summary = "Galera cluster node on `{{$labels.instance}}` not ready",
@@ -173,6 +174,17 @@ ALERT MySQLGaleraNotPart
 	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not part of the cluster"
   }
 
+# Alert : Node is not connected to the cluster
+ALERT MySQLGaleraNotConnected
+  IF (mysql_global_status_wsrep_connected != 1)
+  FOR 1m
+  LABELS {
+	severity = "critical"
+  }
+  ANNOTATIONS {
+    summary = "The node is not connected to the cluster",
+	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not connected to the cluster"
+  }
 
 # Alert : Node overwhelmed by write-sets
 ALERT MySQLGaleraOverwhemledByWriteSets
