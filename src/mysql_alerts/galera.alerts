@@ -132,36 +132,12 @@ ALERT MySQLGaleraRecvQueueLengthTooHigh
     description = "Galera Cluster on `{{$labels.instance}}` had a local received queue length too high ({{$value}}) during the last 5 minutes. It may indicate that the node cannot apply write-sets as fast as it receives them, which can lead to replication throttling",
   }
 
-
-# Alert : Cluster size has less than 3 nodes
-ALERT MySQLGaleraClusterSize
-  IF (mysql_global_status_wsrep_cluster_size < 3)
-  FOR 5m
-  LABELS {
-	severity = "warning"
-  }
-  ANNOTATIONS {
-    summary = "XtraDB Cluster has less than 3 nodes",
-	description = "{{$labels.bosh_deployment}} has less than 3 nodes"
-  }
-
-# Alert : Cluster size has less than 2 nodes
-ALERT MySQLGaleraClusterSize
-  IF (mysql_global_status_wsrep_cluster_size < 2)
-  FOR 5m
-  LABELS {
-	severity = "critical"
-  }
-  ANNOTATIONS {
-    summary = "XtraDB Cluster has less than 2 nodes",
-	description = "{{$labels.bosh_deployment}} has less than 2 nodes"
-  }
-
 # Alert : Cluster hung
 ALERT MySQLGaleraClusterHung
   IF (mysql_global_status_wsrep_flow_control_paused == 1)
   FOR 1m
   LABELS {
+    service = "mysql",
 	severity = "critical"
   }
   ANNOTATIONS {
@@ -174,6 +150,7 @@ ALERT MySQLGaleraGenelogDisabled
   IF (mysql_global_variables_general_log)
   FOR 5m
   LABELS {
+    service = "mysql",
 	severity = "warning"
   }
   ANNOTATIONS {
@@ -186,8 +163,9 @@ ALERT MySQLGaleraGenelogDisabled
 # Alert : Node is not part of the cluster
 ALERT MySQLGaleraNotPart
   IF (mysql_global_status_wsrep_cluster_status != 1)
-  FOR 1m
+  FOR 5m
   LABELS {
+    service = "mysql",
 	severity = "critical"
   }
   ANNOTATIONS {
@@ -195,23 +173,13 @@ ALERT MySQLGaleraNotPart
 	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not part of the cluster"
   }
 
-# Alert : Node is not connected to the cluster
-ALERT MySQLGaleraNotConnected
-  IF (mysql_global_status_wsrep_connected != 1)
-  FOR 1m
-  LABELS {
-	severity = "critical"
-  }
-  ANNOTATIONS {
-    summary = "The node is not connected to the cluster",
-	description = "{{$labels.bosh_deployment}} / {{$labels.job}} on {{$labels.instance}} is not connected to the cluster"
-  }
 
 # Alert : Node overwhelmed by write-sets
 ALERT MySQLGaleraOverwhemledByWriteSets
   IF (mysql_global_status_wsrep_local_recv_queue > 100)
-  FOR 1m
+  FOR 5m
   LABELS {
+    service = "mysql",
 	severity = "critical"
   }
   ANNOTATIONS {
@@ -222,9 +190,10 @@ ALERT MySQLGaleraOverwhemledByWriteSets
 # Alert : Node lagging behind
 ALERT MySQLGaleraLagging
   IF (mysql_global_status_wsrep_flow_control_paused > 0.5 and mysql_global_status_wsrep_flow_control_paused < 1)
-  FOR 1m
+  FOR 5m
   LABELS {
-	severity = "warning"
+    service = "mysql",
+	severity = "critical"
   }
   ANNOTATIONS {
     summary = "Node lagging behind",

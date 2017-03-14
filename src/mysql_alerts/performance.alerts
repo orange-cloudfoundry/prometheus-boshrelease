@@ -12,8 +12,9 @@ ALERT MySQLInnoDBLogWaits
 # Alert: Threads connected
 ALERT MySQLThreadsConnected
   IF (mysql_global_status_threads_connected == mysql_global_variables_max_connections)
-  FOR 1m
+  FOR 5m
   LABELS {
+    service = "mysql",
     severity = "critical"
   }
   ANNOTATIONS {
@@ -25,7 +26,8 @@ ALERT MySQLThreadsConnected
 ALERT MySQLMaxConnections
   IF (mysql_global_status_max_used_connections == mysql_global_variables_max_connections)
   LABELS {
-    severity = "warning"
+    service = "mysql",
+    severity = "critical"
   }
   ANNOTATIONS {
     summary = "MySQL reached too many connections",
@@ -36,6 +38,7 @@ ALERT MySQLMaxConnections
 ALERT MySQLInnoDBBufferPool
   IF (rate(mysql_global_status_innodb_buffer_pool_wait_free[5m]) > 10)
   LABELS {
+    service = "mysql",
     severity = "warning"
   }
   ANNOTATIONS {
@@ -47,6 +50,7 @@ ALERT MySQLInnoDBBufferPool
 ALERT MySQLTableCache
   IF (mysql_global_status_opened_tables > mysql_global_variables_table_open_cache)
   LABELS {
+    service = "mysql",
     severity = "warning"
   }
   ANNOTATIONS {
@@ -58,6 +62,7 @@ ALERT MySQLTableCache
 ALERT MySQLFullJoins
   IF (rate(mysql_global_status_select_full_join[5m]) > 1)
   LABELS {
+    service = "mysql",
     severity = "warning"
   }
   ANNOTATIONS {
@@ -69,6 +74,7 @@ ALERT MySQLFullJoins
 ALERT MySQLSlowQueries
   IF (rate(mysql_global_status_slow_queries[5m]) > 1)
   LABELS {
+    service = "mysql",
     severity = "warning"
   }
   ANNOTATIONS {

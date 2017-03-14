@@ -2,6 +2,7 @@
 ALERT MySQLUptime
   IF (mysql_global_status_uptime < 3600)
   LABELS {
+    service = "mysql",
     severity = "warning"
   }
   ANNOTATIONS {
