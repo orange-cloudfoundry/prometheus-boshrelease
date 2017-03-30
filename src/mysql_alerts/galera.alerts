@@ -146,10 +146,10 @@ ALERT MySQLGaleraClusterHung
 	description = "{{$labels.bosh_deployment}} is hung"
   }
 
-# Alert : Checking that general log is disabled
-ALERT MySQLGaleraGenelogDisabled
-  IF (mysql_global_variables_general_log)
-  FOR 5m
+# Alert : Checking that general log is enabled
+ALERT MySQLGaleraGeneralLogEnabled
+  IF (mysql_global_variables_general_log > 0)
+  FOR 30m
   LABELS {
     service = "mysql",
 	severity = "warning"
