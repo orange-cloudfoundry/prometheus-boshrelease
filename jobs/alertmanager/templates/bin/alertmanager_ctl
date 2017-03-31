@@ -50,7 +50,7 @@ case $1 in
       <% link('alertmanager').instances.each do |instance|  %> \
       -mesh.peer="<%= "#{instance.address}:#{link('alertmanager').p('alertmanager.mesh.port')}" %>" \
       <% end %> \
-      <% lf_p('alertmanager.mesh.peer') do |peer|  %> \
+      <% if_p('alertmanager.mesh.peer') do |peer|  %> \
       -mesh.peer="<%= peer %>" \
       <% end %> \
       -storage.path="${STORE_DIR}" \
