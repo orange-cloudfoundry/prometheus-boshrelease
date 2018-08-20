@@ -1,7 +1,7 @@
 groups:
   - name: credhub
     rules:
-      - alert: CredhubCrendentialExpired
+      - alert: CredhubCrendentialAging
         expr: max(round((time() - max_over_time(credhub_credential_created_at{}[1h])) / 86400)) by (director, environment, path) > <%= p('credhub_alerts.credential_expire.threshold') %>
         for: <%= p('credhub_alerts.credential_expire.evaluation_time') %>
         labels:
