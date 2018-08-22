@@ -35,20 +35,22 @@ case $1 in
     <% end %>
 
     <%
-    if_link("credhub") do |link|
-      url      = link.internal_url
-      ca_certs = link.ca_certificate
-    else
-      url      = p("credhub_exporter.credhub.api_url")
-      ca_certs = p("credhub_exporter.credhub.ca_certs", "")
-    end
+       url = ""
+       ca_certs = ""
+       if_link("credhub") do |link|
+         url      = sprintf("https://%s:%d", link.p('internal_url'), link.p('port'))
+         ca_certs = link.p('ca_certificate')
+       end.else do
+         url      = p("credhub_exporter.credhub.api_url")
+         ca_certs = p("credhub_exporter.credhub.ca_certs", "")
+      end
     %>
 
     exec credhub_exporter \
       --credhub.api-url="<%= url %>" \
       --credhub.client-id="<%= p('credhub_exporter.credhub.client_id') %>" \
       --credhub.client-secret="<%= p('credhub_exporter.credhub.client_secret') %>" \
-      <% if not ca_certs.empty? do |pem| %> \
+      <% if not ca_certs.empty? %> \
       --credhub.ca-certs-path="/var/vcap/jobs/credhub_exporter/config/credhub_tls_ca_cert.pem" \
       <% end %> \
       <% if_p('credhub_exporter.filters.generic-certificates') do |list| %> \
@@ -66,7 +68,7 @@ case $1 in
       <% if_p('credhub_exporter.log_level') do |log_level| %> \
       --log.level="<%= log_level %>" \
       <% end %> \
-      --metrics.deployment="<%= p('credhub_exporter.metrics.deployment') %>" \
+      --metrics.deployment-name="<%= p('credhub_exporter.metrics.deployment') %>" \
       --metrics.environment="<%= p('credhub_exporter.metrics.environment') %>" \
       <% if_p('credhub_exporter.metrics.namespace') do |namespace| %> \
       --metrics.namespace="<%= namespace %>" \
