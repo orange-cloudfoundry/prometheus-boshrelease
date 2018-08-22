@@ -14,7 +14,7 @@
           client_secret: "((uaa_credhub_exporter_client_secret))"
           ca_certs: ((credhub_ca.ca))
         metrics:
-          director_name: ((director_name))
+          deployment: ((credhub_deployment_name))
           environment: "((metrics_environment))"
         skip_ssl_verify: ((skip_ssl_verify))
         filters:
