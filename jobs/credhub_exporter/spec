@@ -10,6 +10,11 @@ templates:
   config/web_tls_key.pem: config/web_tls_key.pem
   config/credhub_tls_ca_cert.pem: config/credhub_tls_ca_cert.pem
 
+consumes:
+- name: credhub
+  type: credhub
+  optional: true
+
 properties:
   credhub_exporter.credhub.api_url:
     description: "Credhub API URL"
@@ -19,7 +24,7 @@ properties:
     description: "Credhub Client Secret"
   credhub_exporter.credhub.ca_certs:
     description: "Credhub CA certificates (PEM format)"
-  credhub_exporter.metrics.director_name:
+  credhub_exporter.metrics.deployment:
     description: "Deployment name to be reported as a metric label"
   credhub_exporter.metrics.environment:
     description: "Environment label to be attached to metrics"
@@ -27,6 +32,10 @@ properties:
     description: "Metrics Namespace"
   credhub_exporter.filters.generic-certificates:
     description: "Json list of <regexp> to match generic credentials paths that may contains certificates"
+  credhub_exporter.filters.name-like:
+    description: "Fetch credentials whose name contains the query string (fetch all credentials when empty)"
+  credhub_exporter.filters.path:
+    description: "Fetch credentials that exist under the provided path"
   credhub_exporter.log_format:
     description: "Set the log target and format. Example: 'logger:syslog?appname=bob&local=7' or 'logger:stdout?json=true'"
   credhub_exporter.log_level:

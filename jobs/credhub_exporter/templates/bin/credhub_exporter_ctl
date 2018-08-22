@@ -34,15 +34,31 @@ case $1 in
     export no_proxy="<%= no_proxy %>"
     <% end %>
 
+    <%
+    if_link("credhub") do |link|
+      url      = link.internal_url
+      ca_certs = link.ca_certificate
+    else
+      url      = p("credhub_exporter.credhub.api_url")
+      ca_certs = p("credhub_exporter.credhub.ca_certs", "")
+    end
+    %>
+
     exec credhub_exporter \
-      --credhub.api-url="<%= p('credhub_exporter.credhub.api_url') %>" \
+      --credhub.api-url="<%= url %>" \
       --credhub.client-id="<%= p('credhub_exporter.credhub.client_id') %>" \
       --credhub.client-secret="<%= p('credhub_exporter.credhub.client_secret') %>" \
-      <% if_p('credhub_exporter.credhub.ca_certs') do |pem| %> \
+      <% if not ca_certs.empty? do |pem| %> \
       --credhub.ca-certs-path="/var/vcap/jobs/credhub_exporter/config/credhub_tls_ca_cert.pem" \
       <% end %> \
       <% if_p('credhub_exporter.filters.generic-certificates') do |list| %> \
       --filters.generic-certificates='<%= list.to_json %>' \
+      <% end %> \
+      <% if_p('credhub_exporter.filters.name-like') do |name| %> \
+      --filters.name-like='<%= name %>' \
+      <% end %> \
+      <% if_p('credhub_exporter.filters.path') do |path| %> \
+      --filters.path='<%= path %>' \
       <% end %> \
       <% if_p('credhub_exporter.log_format') do |log_format| %> \
       --log.format="<%= log_format %>" \
@@ -50,11 +66,11 @@ case $1 in
       <% if_p('credhub_exporter.log_level') do |log_level| %> \
       --log.level="<%= log_level %>" \
       <% end %> \
-      --metrics.director-name="<%= p('credhub_exporter.metrics.director_name') %>" \
+      --metrics.deployment="<%= p('credhub_exporter.metrics.deployment') %>" \
+      --metrics.environment="<%= p('credhub_exporter.metrics.environment') %>" \
       <% if_p('credhub_exporter.metrics.namespace') do |namespace| %> \
       --metrics.namespace="<%= namespace %>" \
       <% end %> \
-      --metrics.environment="<%= p('credhub_exporter.metrics.environment') %>" \
       <% if p('credhub_exporter.skip_ssl_verify') %> \
       --skip-ssl-verify \
       <% end %> \
