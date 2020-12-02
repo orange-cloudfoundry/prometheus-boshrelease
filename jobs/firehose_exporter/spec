@@ -8,10 +8,18 @@ templates:
   bin/firehose_exporter_ctl: bin/firehose_exporter_ctl
   config/web_tls_cert.pem: config/web_tls_cert.pem
   config/web_tls_key.pem: config/web_tls_key.pem
+  config/rlp_tls_ca.pem: config/rlp_tls_ca.pem
+  config/rlp_tls_cert.pem: config/rlp_tls_cert.pem
+  config/rlp_tls_key.pem: config/rlp_tls_key.pem
 
 provides:
   - name: firehose_exporter
     type: firehose_exporter
+
+consumes:
+  - name: reverse_log_proxy
+    type: reverse_log_proxy
+    optional: true
 
 properties:
   firehose_exporter.uaa.url:
@@ -42,6 +50,16 @@ properties:
     description: "Comma separated events to filter (ContainerMetric, CounterEvent, HttpStartStop, ValueMetric)"
   firehose_exporter.logging.url:
     description: "Cloud Foundry Logging endpoint"
+    default: ""
+  firehose_exporter.logging.tls.ca:
+    description: "Ca cert to connect to rlp"
+    default: ""
+  firehose_exporter.logging.tls.cert:
+    description: "Cert to connect to rlp in mtls auth"
+    default: ""
+  firehose_exporter.logging.tls.key:
+    description: "Key to connect to rlp in mtls auth"
+    default: ""
   firehose_exporter.logging.use_legacy_firehose:
     description: "Whether to use the v1 firehose rather than the RLP"
     default: false

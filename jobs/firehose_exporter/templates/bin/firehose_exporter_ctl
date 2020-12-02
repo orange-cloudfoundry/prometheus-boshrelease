@@ -68,7 +68,15 @@ case $1 in
       <% if_p('firehose_exporter.filter.events') do |events| %> \
       --filter.events="<%= events %>" \
       <% end %> \
+<% if_link('reverse_log_proxy') do |rlp| %>
+      --logging.url="<%= "#{rlp.address}:#{rlp.p('reverse_log_proxy.egress.port')}" %>" \
+      --logging.tls.ca="/var/vcap/jobs/firehose_exporter/config/rlp_tls_ca.pem" \
+      --logging.tls.cert="/var/vcap/jobs/firehose_exporter/config/rlp_tls_cert.pem" \
+      --logging.tls.key="/var/vcap/jobs/firehose_exporter/config/rlp_tls_key.pem" \
+<% else %>
       --logging.url="<%= p('firehose_exporter.logging.url') %>" \
+      --logging.use-rlp-gateway \
+<% end %>
       <% if p('firehose_exporter.logging.use_legacy_firehose') %> \
       --logging.use-legacy-firehose \
       <% end %> \

@@ -1,0 +1,30 @@
+- type: replace
+  path: /instance_groups/name=firehose/jobs/name=firehose_exporter/consumes?
+  value:
+    reverse_log_proxy:
+      deployment: cf
+      from: reverse_log_proxy
+
+- type: remove
+  path: /instance_groups/name=firehose/jobs/name=firehose_exporter/properties/firehose_exporter/logging/url
+
+- type: replace
+  path: /instance_groups/name=firehose/jobs/name=firehose_exporter/properties/firehose_exporter/logging/tls?
+  value:
+    ca: ((firehose_exporter_to_logs_provider.ca))
+    cert: ((firehose_exporter_to_logs_provider.cert))
+    key: ((firehose_exporter_to_logs_provider.key))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: firehose_exporter_to_logs_provider
+    options:
+      ca: ((loggregator_ca_name))
+      common_name: firehose-exporter
+      extended_key_usage:
+        - client_auth
+        - server_auth
+    type: certificate
+
+
