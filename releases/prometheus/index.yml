@@ -35,6 +35,8 @@ builds:
     version: 21.0.0
   3e497906-3625-4f7a-a2ac-4565cef68561:
     version: "1"
+  3f90116b-b0f6-47c5-492e-320e4949a855:
+    version: 26.5.0-ora
   41e4c9c1-231d-4522-a702-61aaa6f6f7a5:
     version: 17.4.1
   4b47c1b9-16fd-497d-97b9-2316b68fbbee:
