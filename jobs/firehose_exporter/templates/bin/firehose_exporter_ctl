@@ -38,6 +38,7 @@ case $1 in
     <% if_p('firehose_exporter.web.auth_password') do |auth_password| %>
     export FIREHOSE_EXPORTER_WEB_AUTH_PASSWORD="<%= auth_password %>"
     <% end %>
+    export GODEBUG="x509ignoreCN=0" # temporary (15Sep2020) while we wait for upstream (firehose) certs to be updated
 
     exec firehose_exporter \
       --uaa.url="<%= p('firehose_exporter.uaa.url') %>" \
@@ -68,15 +69,17 @@ case $1 in
       <% if_p('firehose_exporter.filter.events') do |events| %> \
       --filter.events="<%= events %>" \
       <% end %> \
-<% if_link('reverse_log_proxy') do |rlp| %>
+      <% if p('firehose_exporter.logging.url', '').empty? %> \
+      <% if_link('reverse_log_proxy') do |rlp| %> \
       --logging.url="<%= "#{rlp.address}:#{rlp.p('reverse_log_proxy.egress.port')}" %>" \
       --logging.tls.ca="/var/vcap/jobs/firehose_exporter/config/rlp_tls_ca.pem" \
       --logging.tls.cert="/var/vcap/jobs/firehose_exporter/config/rlp_tls_cert.pem" \
       --logging.tls.key="/var/vcap/jobs/firehose_exporter/config/rlp_tls_key.pem" \
-<% else %>
+      <% end %> \
+      <% else %> \
       --logging.url="<%= p('firehose_exporter.logging.url') %>" \
       --logging.use-rlp-gateway \
-<% end %>
+      <% end %> \
       <% if p('firehose_exporter.logging.use_legacy_firehose') %> \
       --logging.use-legacy-firehose \
       <% end %> \
