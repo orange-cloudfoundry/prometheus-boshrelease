@@ -73,7 +73,7 @@ case $1 in
       --logging.tls.ca="/var/vcap/jobs/firehose_exporter/config/rlp_tls_ca.pem" \
       --logging.tls.cert="/var/vcap/jobs/firehose_exporter/config/rlp_tls_cert.pem" \
       --logging.tls.key="/var/vcap/jobs/firehose_exporter/config/rlp_tls_key.pem" \
-<% else %>
+<% end.else do %>
       --logging.url="<%= p('firehose_exporter.logging.url') %>" \
       --logging.use-rlp-gateway \
 <% end %>
