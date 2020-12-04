@@ -40,6 +40,7 @@ elasticsearch_exporter/elasticsearch_exporter-1.1.0.linux-amd64.tar.gz:
   sha: sha256:1d2444d7cbf321cb31d58d2fecc08c8bc90bbcec581f8a1ddb987f9ef425482b
 firehose_exporter/firehose_exporter-6.3.0-ora.linux-amd64.tar.gz:
   size: 9171827
+  object_id: 9763d1bf-ebea-4f23-61ff-489a7d2e188e
   sha: sha256:a7ecc608b5ece09c6988ecce4e10d1ab7cbf7fdc4a289d9d23e17d0996777d7a
 fontconfig/fontconfig-2.13.92.tar.gz:
   size: 2127384
